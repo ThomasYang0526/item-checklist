@@ -411,7 +411,7 @@
                 "彩色降落傘 (Colorful Parachute)",
                 "迷你太空船 (Mini Spaceship)",
                 "小型卡車 (Small Truck)",
-                "彩色氣球 (Colorful Hot Air Balloon)", // Changed to Hot Air Balloon for more variety
+                "彩色氣球 (Colorful Hot Air Balloon)", 
                 "迷你潛水艇 (Mini Submarine)",
                 "小型熱氣球 (Small Hot Air Balloon)",
                 "彩虹風箏 (Rainbow Kite)"
@@ -456,7 +456,8 @@
             ]
         };
 
-        let completedItems = new Set(); // Stores only the full string, e.g., "粉色甜甜圈 (Pink Donut)"
+        // completedItems 儲存的是完整的項目字串，例如 "粉色甜甜圈 (Pink Donut)"
+        let completedItems = new Set(); 
 
         function initializeItems() {
             const container = document.getElementById('itemsContainer');
@@ -468,7 +469,7 @@
                 
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'group-header';
-                // No need to split, category already contains Chinese (English)
+                // 類別名稱已包含中英文，直接使用
                 headerDiv.textContent = `${category} (${items.length})`; 
                 
                 const listDiv = document.createElement('div');
@@ -481,11 +482,13 @@
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.className = 'item-checkbox';
+                    // 勾選框狀態改變時呼叫 toggleItem
                     checkbox.addEventListener('change', (e) => toggleItem(item, e.target.checked));
                     
                     const label = document.createElement('span');
                     label.className = 'item-name';
-                    label.textContent = item; // This will now include both Chinese and English
+                    label.textContent = item; // 顯示中英文合併的項目名稱
+                    // 點擊文字時也能觸發勾選/取消勾選
                     label.addEventListener('click', () => {
                         checkbox.checked = !checkbox.checked;
                         toggleItem(item, checkbox.checked);
@@ -501,17 +504,18 @@
                 container.appendChild(groupDiv);
             });
 
+            // 初始化項目後更新統計數據
             updateStats();
         }
 
         function toggleItem(item, isCompleted) {
-            // Find the specific item entry in the DOM based on its full text
+            // 根據完整的項目名稱找到對應的 DOM 元素
             const items = document.querySelectorAll('.item-entry .item-name');
             let targetEntry = null;
             
             items.forEach(nameElement => {
                 if (nameElement.textContent === item) {
-                    targetEntry = nameElement.closest('.item-entry');
+                    targetEntry = nameElement.closest('.item-entry'); // 找到該項目的父容器
                 }
             });
             
@@ -526,7 +530,7 @@
             }
             
             updateStats();
-            saveProgress();
+            saveProgress(); // 每次勾選狀態改變時儲存進度
         }
 
         function updateStats() {
@@ -541,56 +545,62 @@
 
         function clearAllChecks() {
             if (confirm('確定要清除所有勾選嗎？')) {
-                completedItems.clear();
+                completedItems.clear(); // 清空 Set
                 document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                    checkbox.checked = false;
+                    checkbox.checked = false; // 取消所有勾選框
                 });
                 document.querySelectorAll('.item-entry').forEach(entry => {
-                    entry.classList.remove('completed');
+                    entry.classList.remove('completed'); // 移除完成狀態樣式
                 });
                 updateStats();
-                saveProgress();
+                saveProgress(); // 儲存清空後的進度
             }
         }
 
         function saveProgress() {
             try {
+                // 將 Set 轉換為陣列，然後轉換為 JSON 字串儲存
                 const data = JSON.stringify(Array.from(completedItems));
-                // Using a global variable for persistence in this single-page context
-                window.hangingItemsProgress = data; 
-                console.log('進度已儲存:', completedItems.size, '項目');
+                // 使用 localStorage 進行持久化儲存
+                localStorage.setItem('hangingItemsProgress', data); 
+                console.log('進度已儲存到 localStorage:', completedItems.size, '項目');
             } catch (error) {
-                console.log('無法儲存進度:', error);
+                console.error('無法儲存進度到 localStorage:', error);
             }
         }
 
         function loadProgress() {
             try {
-                const saved = window.hangingItemsProgress;
+                // 從 localStorage 讀取儲存的 JSON 字串
+                const saved = localStorage.getItem('hangingItemsProgress');
                 if (saved) {
+                    // 將 JSON 字串解析回陣列，然後轉換為 Set
                     const savedItems = JSON.parse(saved);
                     completedItems = new Set(savedItems);
-                    console.log('已載入儲存的進度:', savedItems.length, '項目');
+                    console.log('已從 localStorage 載入儲存的進度:', savedItems.length, '項目');
                     
-                    // Delay applying checks to ensure DOM is fully rendered
+                    // 為了確保 DOM 元素已經渲染完成，稍微延遲再應用勾選狀態
                     setTimeout(() => {
                         completedItems.forEach(item => {
                             const entries = document.querySelectorAll('.item-entry');
                             entries.forEach(entry => {
                                 const nameElement = entry.querySelector('.item-name');
                                 const checkbox = entry.querySelector('.item-checkbox');
-                                // Check if the full item string matches
+                                // 匹配完整的項目字串來恢復勾選狀態
                                 if (nameElement && nameElement.textContent === item) {
                                     checkbox.checked = true;
                                     entry.classList.add('completed');
                                 }
                             });
                         });
-                        updateStats();
-                    }, 100); // Small delay
+                        updateStats(); // 載入進度後更新統計數據
+                    }, 100); 
                 }
             } catch (error) {
-                console.log('無法載入進度:', error);
+                console.error('無法載入進度或解析數據:', error);
+                // 如果載入失敗，清空已完成的項目以避免錯誤狀態
+                completedItems.clear();
+                updateStats();
             }
         }
 
@@ -601,6 +611,7 @@
             const itemGroups = document.querySelectorAll('.item-group');
             
             if (searchTerm === '') {
+                // 如果搜尋框為空，顯示所有項目和組
                 itemGroups.forEach(group => {
                     group.style.display = 'block';
                     const itemEntries = group.querySelectorAll('.item-entry');
@@ -613,12 +624,12 @@
             
             itemGroups.forEach(group => {
                 const itemEntries = group.querySelectorAll('.item-entry');
-                let hasVisibleItems = false;
+                let hasVisibleItems = false; // 標記該組是否有可見項目
                 
                 itemEntries.forEach(entry => {
                     const itemNameElement = entry.querySelector('.item-name');
                     if (itemNameElement) {
-                        // Search against the combined Chinese and English text
+                        // 搜尋時對照中英文合併的文字
                         const itemName = itemNameElement.textContent.toLowerCase(); 
                         
                         if (itemName.includes(searchTerm)) {
@@ -630,6 +641,7 @@
                     }
                 });
                 
+                // 根據組內是否有可見項目來決定是否顯示該組
                 if (hasVisibleItems) {
                     group.style.display = 'block';
                 } else {
@@ -638,10 +650,10 @@
             });
         });
 
-        // 初始化頁面
+        // 頁面載入完成時執行
         document.addEventListener('DOMContentLoaded', function() {
-            initializeItems(); // First render all items
-            loadProgress(); // Then apply saved progress
+            initializeItems(); // 先初始化所有項目
+            loadProgress();    // 再載入並應用儲存的進度
         });
     </script>
 </body>
