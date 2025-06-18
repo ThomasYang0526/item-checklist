@@ -5,201 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>狗狗影片懸吊物品清單 - 製作進度追蹤</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
+            line-height: 1.6; color: #333;
             background: linear-gradient(135deg, #ff9a56 0%, #ff6b9d 100%);
-            min-height: 100vh;
-            padding: 20px;
+            min-height: 100vh; padding: 20px;
         }
-
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 1200px; margin: 0 auto;
+            background: rgba(255,255,255,0.95); border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
-
         .header {
             background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 30px;
-            text-align: center;
+            color: white; padding: 30px; text-align: center;
         }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .stats {
-            background: #f8f9fa;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-        }
-
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .stats, .search-box { background: #f8f9fa; padding: 20px 30px; border-bottom: 1px solid #e9ecef; }
+        .stats { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .stat-item { display: flex; align-items: center; gap: 10px; font-weight: bold; }
         .stat-number {
-            background: #28a745;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 1.1em;
+            background: #28a745; color: white; padding: 5px 12px;
+            border-radius: 20px; font-size: 1.1em;
         }
-
-        .search-box {
-            padding: 20px 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
-
         .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
+            width: 100%; padding: 12px 20px;
+            border: 2px solid #ddd; border-radius: 25px;
+            font-size: 16px; outline: none;
             transition: border-color 0.3s;
         }
-
-        .search-input:focus {
-            border-color: #28a745;
-        }
-
+        .search-input:focus { border-color: #28a745; }
         .items-container {
             padding: 30px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
-
         .item-group {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            background: white; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
         .item-group:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-
         .group-header {
             background: linear-gradient(135deg, #ffeaa7, #fab1a0);
-            color: #2d3436;
-            padding: 15px 20px;
-            font-weight: bold;
-            font-size: 1.2em;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            color: #2d3436; padding: 15px 20px;
+            font-weight: bold; font-size: 1.2em;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
         }
-
-        .item-list {
-            padding: 20px;
-        }
-
+        .item-list { padding: 20px; }
         .item-entry {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
+            display: flex; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #f0f0f0;
             transition: background-color 0.2s;
         }
-
-        .item-entry:last-child {
-            border-bottom: none;
-        }
-
-        .item-entry:hover {
-            background-color: #f8f9fa;
-        }
-
+        .item-entry:last-child { border-bottom: none; }
+        .item-entry:hover { background-color: #f8f9fa; }
         .item-checkbox {
-            width: 18px;
-            height: 18px;
-            margin-right: 15px;
-            cursor: pointer;
-            accent-color: #28a745;
+            width: 18px; height: 18px; margin-right: 15px;
+            cursor: pointer; accent-color: #28a745;
         }
-
-        .item-name {
-            flex: 1;
-            font-size: 1.05em;
-            cursor: pointer;
-        }
-
-        .item-entry.completed {
-            background-color: #d4edda;
-            opacity: 0.8;
-        }
-
+        .item-name { flex: 1; font-size: 1.05em; cursor: pointer; }
+        .item-entry.completed { background-color: #d4edda; opacity: 0.8; }
         .item-entry.completed .item-name {
-            text-decoration: line-through;
-            color: #6c757d;
+            text-decoration: line-through; color: #6c757d;
         }
-
         .clear-all {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            position: fixed; bottom: 30px; right: 30px;
+            background: #dc3545; color: white; border: none;
+            padding: 15px 25px; border-radius: 50px;
+            font-size: 16px; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(220,53,69,0.3);
             transition: all 0.3s;
         }
-
-        .clear-all:hover {
-            background: #c82333;
-            transform: scale(1.05);
-        }
-
+        .clear-all:hover { background: #c82333; transform: scale(1.05); }
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .items-container {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-            
-            .stats {
-                flex-direction: column;
-                align-items: stretch;
-            }
+            .header h1 { font-size: 2em; }
+            .items-container { grid-template-columns: 1fr; padding: 20px; }
+            .stats { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -212,16 +102,13 @@
 
         <div class="stats">
             <div class="stat-item">
-                <span>總物品數：</span>
-                <span class="stat-number" id="totalCount">0</span>
+                <span>總物品數：</span><span class="stat-number" id="totalCount">0</span>
             </div>
             <div class="stat-item">
-                <span>已拍攝：</span>
-                <span class="stat-number" id="completedCount">0</span>
+                <span>已拍攝：</span><span class="stat-number" id="completedCount">0</span>
             </div>
             <div class="stat-item">
-                <span>完成率：</span>
-                <span class="stat-number" id="progressPercent">0%</span>
+                <span>完成率：</span><span class="stat-number" id="progressPercent">0%</span>
             </div>
         </div>
 
@@ -229,231 +116,116 @@
             <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜尋懸吊物品...">
         </div>
 
-        <div class="items-container" id="itemsContainer">
-            <!-- 懸吊物品將由 JavaScript 動態生成 -->
-        </div>
+        <div class="items-container" id="itemsContainer"></div>
     </div>
 
     <button class="clear-all" onclick="clearAllChecks()">清除所有勾選</button>
 
     <script>
+        // 原有分類與中文項目
         const hangingItems = {
-            "美食類": [
-                "粉色甜甜圈",
-                "迷你漢堡",
-                "巨大棉花糖",
-                "彩虹甜甜圈",
-                "迷你披薩片",
-                "巧克力餅乾",
-                "彩色棒棒糖",
-                "迷你蛋糕",
-                "熱狗",
-                "爆米花串",
-                "彩色冰淇淋甜筒",
-                "迷你鬆餅",
-                "彩虹糖果",
-                "巨大軟糖熊",
-                "迷你甜甜圈塔",
-                "大塊骨頭",
-                "彩色馬卡龍",
-                "迷你甜甜圈",
-                "巧克力棒",
-                "水果串"
-            ],
-            "玩具類": [
-                "毛絨玩具老鼠",
-                "彩色羽毛球",
-                "迷你風車",
-                "彩虹風鈴",
-                "小橡皮鴨",
-                "迷你飛機",
-                "彩色氣球束",
-                "毛絨獨角獸",
-                "迷你足球",
-                "彩虹彈簧玩具",
-                "小型魔術方塊",
-                "迷你搖搖",
-                "彩色溜溜球",
-                "毛絨香蕉",
-                "迷你樂高積木",
-                "彩色飛盤",
-                "毛絨小熊",
-                "迷你陀螺",
-                "彩虹拼圖塊",
-                "小型積木"
-            ],
-            "日常用品類": [
-                "彩色襪子",
-                "迷你雨傘",
-                "小型鬧鐘",
-                "彩虹毛巾",
-                "迷你拖鞋",
-                "小帽子",
-                "彩色眼鏡",
-                "迷你手提包",
-                "小型相機",
-                "彩虹圍巾",
-                "迷你電話",
-                "小型燈泡",
-                "彩色手套",
-                "迷你鑰匙圈",
-                "小型計算機",
-                "彩色牙刷",
-                "迷你杯子",
-                "小型鏡子",
-                "彩虹筆",
-                "迷你書本"
-            ],
-            "奇幻創意類": [
-                "發光的星星",
-                "迷你魔法棒",
-                "彩虹羽毛",
-                "閃亮水晶球",
-                "小型寶藏箱",
-                "迷你城堡",
-                "彩色蝴蝶",
-                "發光月亮",
-                "小型火箭",
-                "彩虹雲朵",
-                "迷你外星人",
-                "閃亮皇冠",
-                "小型魔法書",
-                "彩色獨角獸角",
-                "迷你時光機",
-                "發光寶石",
-                "彩虹魔法帽",
-                "迷你龍蛋",
-                "小型魔法瓶",
-                "閃亮仙女棒"
-            ],
-            "動物形狀類": [
-                "毛絨小貓",
-                "彩色小鳥",
-                "迷你大象",
-                "小型長頸鹿",
-                "彩虹魚",
-                "毛絨熊貓",
-                "迷你企鵝",
-                "小型獅子",
-                "彩色蝸牛",
-                "毛絨兔子",
-                "迷你恐龍",
-                "小型章魚",
-                "彩虹蜘蛛",
-                "毛絨海豚",
-                "迷你火烈鳥",
-                "彩色松鼠",
-                "小型老虎",
-                "毛絨狐狸",
-                "迷你猴子",
-                "彩虹蛇"
-            ],
-            "音樂主題類": [
-                "迷你吉他",
-                "小型鼓",
-                "彩色鈴鐺",
-                "迷你鋼琴鍵",
-                "小型薩克斯風",
-                "彩虹口琴",
-                "迷你小提琴",
-                "小型喇叭",
-                "彩色木魚",
-                "迷你手風琴",
-                "小型豎琴",
-                "彩色響板",
-                "迷你長笛",
-                "小型大號",
-                "彩虹音叉"
-            ],
-            "運動用品類": [
-                "迷你籃球",
-                "小型網球拍",
-                "彩色羽毛球拍",
-                "迷你高爾夫球桿",
-                "小型棒球手套",
-                "彩虹呼拉圈",
-                "迷你滑板",
-                "小型跳繩",
-                "彩色飛盤",
-                "迷你保齡球瓶",
-                "小型足球",
-                "彩色乒乓球拍",
-                "迷你排球",
-                "小型曲棍球桿",
-                "彩虹游泳圈"
-            ],
-            "節慶主題類": [
-                "聖誕襪子",
-                "復活節彩蛋",
-                "萬聖節南瓜",
-                "生日帽",
-                "新年鞭炮",
-                "情人節愛心",
-                "聖誕樹裝飾",
-                "彩色拉炮",
-                "迷你禮物盒",
-                "節慶彩帶",
-                "萬聖節蝙蝠",
-                "復活節兔子",
-                "聖誕鈴鐺",
-                "新年燈籠",
-                "情人節玫瑰"
-            ],
-            "交通工具類": [
-                "迷你汽車",
-                "小型直升機",
-                "彩色腳踏車",
-                "迷你火車",
-                "小型船隻",
-                "彩虹飛機",
-                "迷你摩托車",
-                "小型滑翔機",
-                "彩色降落傘",
-                "迷你太空船",
-                "小型卡車",
-                "彩色氣球",
-                "迷你潛水艇",
-                "小型熱氣球",
-                "彩虹風箏"
-            ],
-            "搞笑創意類": [
-                "巨大牙刷",
-                "迷你馬桶",
-                "彩色假牙",
-                "小型鬍子",
-                "迷你假髮",
-                "彩虹鼻子",
-                "小型搞笑眼鏡",
-                "迷你小丑鞋",
-                "彩色舌頭",
-                "小型搞笑帽",
-                "巨大眼球",
-                "迷你搞笑嘴唇",
-                "彩色假鬍鬚",
-                "小型搞笑手",
-                "迷你搞笑腳"
-            ],
-            "超現實創意類": [
-                "會發光的香蕉",
-                "彩虹漢堡",
-                "迷你彩虹",
-                "會動的眼球",
-                "彩色雲朵",
-                "迷你龍捲風",
-                "閃爍鑽石",
-                "小型閃電",
-                "彩虹泡泡",
-                "迷你黑洞",
-                "會唱歌的魚",
-                "跳舞的香腸",
-                "彩虹起司",
-                "迷你魔法鏡",
-                "會發光的蘑菇",
-                "彩色龍蛋",
-                "小型時間膠囊",
-                "迷你許願井",
-                "彩虹煙火"
-            ]
+            "美食類": ["粉色甜甜圈","迷你漢堡","巨大棉花糖","彩虹甜甜圈","迷你披薩片","巧克力餅乾","彩色棒棒糖","迷你蛋糕","熱狗","爆米花串","彩色冰淇淋甜筒","迷你鬆餅","彩虹糖果","巨大軟糖熊","迷你甜甜圈塔","大塊骨頭","彩色馬卡龍","迷你甜甜圈","巧克力棒","水果串"],
+            "玩具類": ["毛絨玩具老鼠","彩色羽毛球","迷你風車","彩虹風鈴","小橡皮鴨","迷你飛機","彩色氣球束","毛絨獨角獸","迷你足球","彩虹彈簧玩具","小型魔術方塊","迷你搖搖","彩色溜溜球","毛絨香蕉","迷你樂高積木","彩色飛盤","毛絨小熊","迷你陀螺","彩虹拼圖塊","小型積木"],
+            "日常用品類": ["彩色襪子","迷你雨傘","小型鬧鐘","彩虹毛巾","迷你拖鞋","小帽子","彩色眼鏡","迷你手提包","小型相機","彩虹圍巾","迷你電話","小型燈泡","彩色手套","迷你鑰匙圈","小型計算機","彩色牙刷","迷你杯子","小型鏡子","彩虹筆","迷你書本"],
+            "奇幻創意類": ["發光的星星","迷你魔法棒","彩虹羽毛","閃亮水晶球","小型寶藏箱","迷你城堡","彩色蝴蝶","發光月亮","小型火箭","彩虹雲朵","迷你外星人","閃亮皇冠","小型魔法書","彩色獨角獸角","迷你時光機","發光寶石","彩虹魔法帽","迷你龍蛋","小型魔法瓶","閃亮仙女棒"],
+            "動物形狀類": ["毛絨小貓","彩色小鳥","迷你大象","小型長頸鹿","彩虹魚","毛絨熊貓","迷你企鵝","小型獅子","彩色蝸牛","毛絨兔子","迷你恐龍","小型章魚","彩虹蜘蛛","毛絨海豚","迷你火烈鳥","彩色松鼠","小型老虎","毛絨狐狸","迷你猴子","彩虹蛇"],
+            "音樂主題類": ["迷你吉他","小型鼓","彩色鈴鐺","迷你鋼琴鍵","小型薩克斯風","彩虹口琴","迷你小提琴","小型喇叭","彩色木魚","迷你手風琴","小型豎琴","彩色響板","迷你長笛","小型大號","彩虹音叉"],
+            "運動用品類": ["迷你籃球","小型網球拍","彩色羽毛球拍","迷你高爾夫球桿","小型棒球手套","彩虹呼拉圈","迷你滑板","小型跳繩","彩色飛盤","迷你保齡球瓶","小型足球","彩色乒乓球拍","迷你排球","小型曲棍球桿","彩虹游泳圈"],
+            "節慶主題類": ["聖誕襪子","復活節彩蛋","萬聖節南瓜","生日帽","新年鞭炮","情人節愛心","聖誕樹裝飾","彩色拉炮","迷你禮物盒","節慶彩帶","萬聖節蝙蝠","復活節兔子","聖誕鈴鐺","新年燈籠","情人節玫瑰"],
+            "交通工具類": ["迷你汽車","小型直升機","彩色腳踏車","迷你火車","小型船隻","彩虹飛機","迷你摩托車","小型滑翔機","彩色降落傘","迷你太空船","小型卡車","彩色氣球","迷你潛水艇","小型熱氣球","彩虹風箏"],
+            "搞笑創意類": ["巨大牙刷","迷你馬桶","彩色假牙","小型鬍子","迷你假髮","彩虹鼻子","小型搞笑眼鏡","迷你小丑鞋","彩色舌頭","小型搞笑帽","巨大眼球","迷你搞笑嘴唇","彩色假鬍鬚","小型搞笑手","迷你搞笑腳"],
+            "超現實創意類": ["會發光的香蕉","彩虹漢堡","迷你彩虹","會動的眼球","彩色雲朵","迷你龍捲風","閃爍鑽石","小型閃電","彩虹泡泡","迷你黑洞","會唱歌的魚","跳舞的香腸","彩虹起司","迷你魔法鏡","會發光的蘑菇","彩色龍蛋","小型時間膠囊","迷你許願井","彩虹煙火"]
+        };
+
+        // 中英對照物件
+        const englishLabels = {
+            // 美食類
+            "粉色甜甜圈":"Pink Donut","迷你漢堡":"Mini Burger","巨大棉花糖":"Giant Marshmallow",
+            "彩虹甜甜圈":"Rainbow Donut","迷你披薩片":"Mini Pizza Slice","巧克力餅乾":"Chocolate Cookie",
+            "彩色棒棒糖":"Colorful Lollipop","迷你蛋糕":"Mini Cake","熱狗":"Hot Dog","爆米花串":"Popcorn Skewer",
+            "彩色冰淇淋甜筒":"Colorful Ice Cream Cone","迷你鬆餅":"Mini Pancake","彩虹糖果":"Rainbow Candy",
+            "巨大軟糖熊":"Giant Gummy Bear","迷你甜甜圈塔":"Mini Donut Tower","大塊骨頭":"Big Bone",
+            "彩色馬卡龍":"Colorful Macaron","迷你甜甜圈":"Mini Donut","巧克力棒":"Chocolate Bar","水果串":"Fruit Skewer",
+
+            // 玩具類
+            "毛絨玩具老鼠":"Plush Mouse Toy","彩色羽毛球":"Colorful Feather Ball","迷你風車":"Mini Pinwheel",
+            "彩虹風鈴":"Rainbow Wind Chime","小橡皮鴨":"Plastic Duckling","迷你飛機":"Mini Airplane",
+            "彩色氣球束":"Colorful Balloon Bunch","毛絨獨角獸":"Plush Unicorn","迷你足球":"Mini Soccer Ball",
+            "彩虹彈簧玩具":"Rainbow Spring Toy","小型魔術方塊":"Mini Rubik's Cube","迷你搖搖":"Mini Rattle",
+            "彩色溜溜球":"Colorful Yo-yo","毛絨香蕉":"Plush Banana","迷你樂高積木":"Mini LEGO Brick",
+            "彩色飛盤":"Colorful Frisbee","毛絨小熊":"Plush Teddy Bear","迷你陀螺":"Mini Spinning Top",
+            "彩虹拼圖塊":"Rainbow Puzzle Piece","小型積木":"Mini Building Block",
+
+            // 日常用品類
+            "彩色襪子":"Colorful Socks","迷你雨傘":"Mini Umbrella","小型鬧鐘":"Mini Alarm Clock",
+            "彩虹毛巾":"Rainbow Towel","迷你拖鞋":"Mini Slippers","小帽子":"Small Hat",
+            "彩色眼鏡":"Colorful Glasses","迷你手提包":"Mini Handbag","小型相機":"Mini Camera",
+            "彩虹圍巾":"Rainbow Scarf","迷你電話":"Mini Telephone","小型燈泡":"Mini Light Bulb",
+            "彩色手套":"Colorful Gloves","迷你鑰匙圈":"Mini Keychain","小型計算機":"Mini Calculator",
+            "彩色牙刷":"Colorful Toothbrush","迷你杯子":"Mini Cup","小型鏡子":"Mini Mirror",
+            "彩虹筆":"Rainbow Pen","迷你書本":"Mini Book",
+
+            // 奇幻創意類
+            "發光的星星":"Glowing Star","迷你魔法棒":"Mini Magic Wand","彩虹羽毛":"Rainbow Feather",
+            "閃亮水晶球":"Shiny Crystal Ball","小型寶藏箱":"Mini Treasure Chest","迷你城堡":"Mini Castle",
+            "彩色蝴蝶":"Colorful Butterfly","發光月亮":"Glowing Moon","小型火箭":"Mini Rocket",
+            "彩虹雲朵":"Rainbow Cloud","迷你外星人":"Mini Alien","閃亮皇冠":"Shiny Crown",
+            "小型魔法書":"Mini Spell Book","彩色獨角獸角":"Colorful Unicorn Horn","迷你時光機":"Mini Time Machine",
+            "發光寶石":"Glowing Gem","彩虹魔法帽":"Rainbow Wizard Hat","迷你龍蛋":"Mini Dragon Egg",
+            "小型魔法瓶":"Mini Potion Bottle","閃亮仙女棒":"Shiny Fairy Wand",
+
+            // 動物形狀類
+            "毛絨小貓":"Plush Kitten","彩色小鳥":"Colorful Bird","迷你大象":"Mini Elephant",
+            "小型長頸鹿":"Mini Giraffe","彩虹魚":"Rainbow Fish","毛絨熊貓":"Plush Panda",
+            "迷你企鵝":"Mini Penguin","小型獅子":"Mini Lion","彩色蝸牛":"Colorful Snail",
+            "毛絨兔子":"Plush Rabbit","迷你恐龍":"Mini Dinosaur","小型章魚":"Mini Octopus",
+            "彩虹蜘蛛":"Rainbow Spider","毛絨海豚":"Plush Dolphin","迷你火烈鳥":"Mini Flamingo",
+            "彩色松鼠":"Colorful Squirrel","小型老虎":"Mini Tiger","毛絨狐狸":"Plush Fox",
+            "迷你猴子":"Mini Monkey","彩虹蛇":"Rainbow Snake",
+
+            // 音樂主題類
+            "迷你吉他":"Mini Guitar","小型鼓":"Mini Drum","彩色鈴鐺":"Colorful Bell",
+            "迷你鋼琴鍵":"Mini Piano Key","小型薩克斯風":"Mini Saxophone","彩虹口琴":"Rainbow Harmonica",
+            "迷你小提琴":"Mini Violin","小型喇叭":"Mini Trumpet","彩色木魚":"Colorful Wooden Fish",
+            "迷你手風琴":"Mini Accordion","小型豎琴":"Mini Harp","彩色響板":"Colorful Clapper",
+            "迷你長笛":"Mini Flute","小型大號":"Mini Tuba","彩虹音叉":"Rainbow Tuning Fork",
+
+            // 運動用品類
+            "迷你籃球":"Mini Basketball","小型網球拍":"Mini Tennis Racket","彩色羽毛球拍":"Colorful Badminton Racket",
+            "迷你高爾夫球桿":"Mini Golf Club","小型棒球手套":"Mini Baseball Glove","彩虹呼拉圈":"Rainbow Hula Hoop",
+            "迷你滑板":"Mini Skateboard","小型跳繩":"Mini Jump Rope","彩色飛盤":"Colorful Disc",
+            "迷你保齡球瓶":"Mini Bowling Pin","小型足球":"Mini Football","彩色乒乓球拍":"Colorful Ping Pong Paddle",
+            "迷你排球":"Mini Volleyball","小型曲棍球桿":"Mini Hockey Stick","彩虹游泳圈":"Rainbow Swim Ring",
+
+            // 節慶主題類
+            "聖誕襪子":"Christmas Stocking","復活節彩蛋":"Easter Egg","萬聖節南瓜":"Halloween Pumpkin",
+            "生日帽":"Birthday Hat","新年鞭炮":"New Year Firecracker","情人節愛心":"Valentine's Heart",
+            "聖誕樹裝飾":"Christmas Tree Ornament","彩色拉炮":"Colorful Party Popper","迷你禮物盒":"Mini Gift Box",
+            "節慶彩帶":"Festive Streamer","萬聖節蝙蝠":"Halloween Bat","復活節兔子":"Easter Bunny",
+            "聖誕鈴鐺":"Christmas Bell","新年燈籠":"New Year Lantern","情人節玫瑰":"Valentine's Rose",
+
+            // 交通工具類
+            "迷你汽車":"Mini Car","小型直升機":"Mini Helicopter","彩色腳踏車":"Colorful Bicycle",
+            "迷你火車":"Mini Train","小型船隻":"Mini Boat","彩虹飛機":"Rainbow Airplane",
+            "迷你摩托車":"Mini Motorcycle","小型滑翔機":"Mini Glider","彩色降落傘":"Colorful Parachute",
+            "迷你太空船":"Mini Spaceship","小型卡車":"Mini Truck","彩色氣球":"Colorful Balloon",
+            "迷你潛水艇":"Mini Submarine","小型熱氣球":"Mini Hot Air Balloon","彩虹風箏":"Rainbow Kite",
+
+            // 搞笑創意類
+            "巨大牙刷":"Giant Toothbrush","迷你馬桶":"Mini Toilet","彩色假牙":"Colorful Dentures",
+            "小型鬍子":"Mini Mustache","迷你假髮":"Mini Wig","彩虹鼻子":"Rainbow Nose",
+            "小型搞笑眼鏡":"Mini Funny Glasses","迷你小丑鞋":"Mini Clown Shoes","彩色舌頭":"Colorful Tongue",
+            "小型搞笑帽":"Mini Funny Hat","巨大眼球":"Giant Eyeball","迷你搞笑嘴唇":"Mini Funny Lips",
+            "彩色假鬍鬚":"Colorful Fake Beard","小型搞笑手":"Mini Funny Hand","迷你搞笑腳":"Mini Funny Foot",
+
+            // 超現實創意類
+            "會發光的香蕉":"Glowing Banana","彩虹漢堡":"Rainbow Burger","迷你彩虹":"Mini Rainbow",
+            "會動的眼球":"Moving Eyeball","彩色雲朵":"Colorful Cloud","迷你龍捲風":"Mini Tornado",
+            "閃爍鑽石":"Twinkling Diamond","小型閃電":"Mini Lightning","彩虹泡泡":"Rainbow Bubble",
+            "迷你黑洞":"Mini Black Hole","會唱歌的魚":"Singing Fish","跳舞的香腸":"Dancing Sausage",
+            "彩虹起司":"Rainbow Cheese","迷你魔法鏡":"Mini Magic Mirror","會發光的蘑菇":"Glowing Mushroom",
+            "彩色龍蛋":"Colorful Dragon Egg","小型時間膠囊":"Mini Time Capsule","迷你許願井":"Mini Wishing Well",
+            "彩虹煙火":"Rainbow Fireworks"
         };
 
         let completedItems = new Set();
@@ -465,36 +237,38 @@
             Object.entries(hangingItems).forEach(([category, items]) => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'item-group';
-                
+
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'group-header';
                 headerDiv.textContent = `${category} (${items.length})`;
-                
+
                 const listDiv = document.createElement('div');
                 listDiv.className = 'item-list';
-                
+
                 items.forEach(item => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'item-entry';
-                    
+
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.className = 'item-checkbox';
-                    checkbox.addEventListener('change', (e) => toggleItem(item, e.target.checked));
-                    
+                    checkbox.addEventListener('change', e => toggleItem(item, e.target.checked));
+
                     const label = document.createElement('span');
                     label.className = 'item-name';
-                    label.textContent = item;
+                    // 中英並列
+                    label.textContent = `${item} (${englishLabels[item]})`;
+
                     label.addEventListener('click', () => {
                         checkbox.checked = !checkbox.checked;
                         toggleItem(item, checkbox.checked);
                     });
-                    
+
                     itemDiv.appendChild(checkbox);
                     itemDiv.appendChild(label);
                     listDiv.appendChild(itemDiv);
                 });
-                
+
                 groupDiv.appendChild(headerDiv);
                 groupDiv.appendChild(listDiv);
                 container.appendChild(groupDiv);
@@ -504,49 +278,35 @@
         }
 
         function toggleItem(item, isCompleted) {
-            const items = document.querySelectorAll('.item-entry');
-            let targetItem = null;
-            
-            items.forEach(entry => {
-                const nameElement = entry.querySelector('.item-name');
-                if (nameElement && nameElement.textContent === item) {
-                    targetItem = entry;
+            document.querySelectorAll('.item-entry').forEach(entry => {
+                const nameEl = entry.querySelector('.item-name');
+                if (nameEl.textContent.startsWith(item)) {
+                    if (isCompleted) {
+                        completedItems.add(item);
+                        entry.classList.add('completed');
+                    } else {
+                        completedItems.delete(item);
+                        entry.classList.remove('completed');
+                    }
                 }
             });
-            
-            if (targetItem) {
-                if (isCompleted) {
-                    completedItems.add(item);
-                    targetItem.classList.add('completed');
-                } else {
-                    completedItems.delete(item);
-                    targetItem.classList.remove('completed');
-                }
-            }
-            
             updateStats();
             saveProgress();
         }
 
         function updateStats() {
-            const totalCount = Object.values(hangingItems).flat().length;
-            const completedCount = completedItems.size;
-            const progressPercent = Math.round((completedCount / totalCount) * 100);
-            
-            document.getElementById('totalCount').textContent = totalCount;
-            document.getElementById('completedCount').textContent = completedCount;
-            document.getElementById('progressPercent').textContent = progressPercent + '%';
+            const total = Object.values(hangingItems).flat().length;
+            const done = completedItems.size;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = done;
+            document.getElementById('progressPercent').textContent = Math.round(done/total*100) + '%';
         }
 
         function clearAllChecks() {
             if (confirm('確定要清除所有勾選嗎？')) {
                 completedItems.clear();
-                document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                document.querySelectorAll('.item-entry').forEach(entry => {
-                    entry.classList.remove('completed');
-                });
+                document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.item-entry').forEach(e => e.classList.remove('completed'));
                 updateStats();
                 saveProgress();
             }
@@ -554,31 +314,20 @@
 
         function saveProgress() {
             try {
-                const data = JSON.stringify(Array.from(completedItems));
-                // 使用變數儲存而非 localStorage（符合 Claude 環境限制）
-                window.hangingItemsProgress = data;
-                console.log('進度已儲存:', completedItems.size, '項目');
-            } catch (error) {
-                console.log('無法儲存進度:', error);
-            }
+                window.hangingItemsProgress = JSON.stringify(Array.from(completedItems));
+            } catch {}
         }
 
         function loadProgress() {
             try {
                 const saved = window.hangingItemsProgress;
                 if (saved) {
-                    const savedItems = JSON.parse(saved);
-                    completedItems = new Set(savedItems);
-                    console.log('已載入儲存的進度:', savedItems.length, '項目');
-                    
+                    completedItems = new Set(JSON.parse(saved));
                     setTimeout(() => {
                         completedItems.forEach(item => {
-                            const entries = document.querySelectorAll('.item-entry');
-                            entries.forEach(entry => {
-                                const nameElement = entry.querySelector('.item-name');
-                                const checkbox = entry.querySelector('.item-checkbox');
-                                if (nameElement && nameElement.textContent === item) {
-                                    checkbox.checked = true;
+                            document.querySelectorAll('.item-entry').forEach(entry => {
+                                if (entry.querySelector('.item-name').textContent.startsWith(item)) {
+                                    entry.querySelector('.item-checkbox').checked = true;
                                     entry.classList.add('completed');
                                 }
                             });
@@ -586,56 +335,25 @@
                         updateStats();
                     }, 100);
                 }
-            } catch (error) {
-                console.log('無法載入進度:', error);
-            }
+            } catch {}
         }
 
         // 搜尋功能
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            
-            const itemGroups = document.querySelectorAll('.item-group');
-            
-            if (searchTerm === '') {
-                itemGroups.forEach(group => {
-                    group.style.display = 'block';
-                    const itemEntries = group.querySelectorAll('.item-entry');
-                    itemEntries.forEach(entry => {
-                        entry.style.display = 'flex';
-                    });
+        document.getElementById('searchInput').addEventListener('input', e => {
+            const term = e.target.value.trim().toLowerCase();
+            document.querySelectorAll('.item-group').forEach(group => {
+                let anyVisible = false;
+                group.querySelectorAll('.item-entry').forEach(entry => {
+                    const name = entry.querySelector('.item-name').textContent.toLowerCase();
+                    const show = !term || name.includes(term);
+                    entry.style.display = show ? 'flex' : 'none';
+                    if (show) anyVisible = true;
                 });
-                return;
-            }
-            
-            itemGroups.forEach(group => {
-                const itemEntries = group.querySelectorAll('.item-entry');
-                let hasVisibleItems = false;
-                
-                itemEntries.forEach(entry => {
-                    const itemNameElement = entry.querySelector('.item-name');
-                    if (itemNameElement) {
-                        const itemName = itemNameElement.textContent.toLowerCase();
-                        
-                        if (itemName.includes(searchTerm)) {
-                            entry.style.display = 'flex';
-                            hasVisibleItems = true;
-                        } else {
-                            entry.style.display = 'none';
-                        }
-                    }
-                });
-                
-                if (hasVisibleItems) {
-                    group.style.display = 'block';
-                } else {
-                    group.style.display = 'none';
-                }
+                group.style.display = anyVisible ? 'block' : 'none';
             });
         });
 
-        // 初始化頁面
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             loadProgress();
             initializeItems();
         });
